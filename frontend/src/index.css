@@ -9,3 +9,11 @@ main {
 h3{
     padding: 1rem 0 0 0;
 }
+
+.productTitle {
+    text-decoration: none;
+}
+
+.productTitle:hover {
+    text-decoration: underline;
+}
