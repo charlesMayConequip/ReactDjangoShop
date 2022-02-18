@@ -1,0 +1,1 @@
+Left off trying to find out why the event handler on the button in the checkout screen is not working.  I'm pretty sure that I stopped using history because it was not working for something else so it seems that I am going to need to find out a work-around method for this as-well.  I browsed the comments a little bit and others had the same issue however there was no resolution.
