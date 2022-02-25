@@ -35,7 +35,8 @@ function CartScreen({ match, location, history }) {
 
   const navigate = useNavigate();
   const checkoutHandler = () => {
-      navigate('/login?redirect=shipping')
+      //navigate('/login?redirect=shipping')
+      navigate('/shipping')
   }
 
   return (
@@ -98,16 +99,14 @@ function CartScreen({ match, location, history }) {
                   </ListGroup.Item>
               </ListGroup>
               <ListGroup.Item>
-                  <Row>
                   <Button
                     type='button'
-                    className='btn-block'
+                    className='col-12'
                     disabled={cartItems.length == 0}
                     onClick={checkoutHandler}
                   >
                       Proceed To Checkout
                   </Button>
-                  </Row>
               </ListGroup.Item>
           </Card>
       </Col>

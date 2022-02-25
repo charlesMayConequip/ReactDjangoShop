@@ -111,16 +111,14 @@ function ProductScreen({ match }) {
                 )}
 
                 <ListGroup.Item>
-                  <Row>
                     <Button
                       onClick={addToCartHandler}
-                      className="btn-block"
+                      className="col-12"
                       disabled={product.countInStock == 0}
                       type="button"
                     >
                       Add to Cart
                     </Button>
-                  </Row>
                 </ListGroup.Item>
               </ListGroup>
             </Card>
