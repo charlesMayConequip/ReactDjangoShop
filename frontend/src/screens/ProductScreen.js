@@ -114,7 +114,7 @@ function ProductScreen({ match }) {
                     <Button
                       onClick={addToCartHandler}
                       className="col-12"
-                      disabled={product.countInStock == 0}
+                      disabled={product.countInStock <= 0}
                       type="button"
                     >
                       Add to Cart

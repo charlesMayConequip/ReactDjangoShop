@@ -3,19 +3,53 @@ import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import CheckoutSteps from "../components/CheckoutSteps";
 import Message from "../components/Message";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate, Link, Navigate } from "react-router-dom";
+import { createOrder } from "../actions/orderActions";
+import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
-function PlaceOrderScreen() {
+function PlaceOrderScreen({ history }) {
+
+  const orderCreate = useSelector(state => state.orderCreate)
+  const {order, error, success} = orderCreate
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cart = useSelector((state) => state.cart);
 
-  cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
-  cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2)
-  cart.taxPrice = Number(0.08 * cart.itemsPrice).toFixed(2)
-  cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
-  
-  const placeOrder = () => {
-      console.log("Place Order")
+  cart.itemsPrice = cart.cartItems
+    .reduce((acc, item) => acc + item.price * item.qty, 0)
+    .toFixed(2);
+  cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2);
+  cart.taxPrice = Number(0.08 * cart.itemsPrice).toFixed(2);
+  cart.totalPrice = (
+    Number(cart.itemsPrice) +
+    Number(cart.shippingPrice) +
+    Number(cart.taxPrice)
+  ).toFixed(2);
+
+  if(!cart.paymentMethod){
+    navigate('/payment')
   }
+
+  useEffect(() => {
+    if(success){
+      navigate(`/order/${order._id}`)
+      dispatch({type: ORDER_CREATE_RESET})
+    }
+  }, [success, history])
+
+  const placeOrder = () => {
+    dispatch(
+      createOrder({
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: cart.itemsPrice,
+        shippingPrice: cart.shippingPrice,
+        taxPrice: cart.taxPrice,
+        totalPrice: cart.totalPrice,
+      })
+    );
+  };
 
   return (
     <div>
@@ -60,7 +94,10 @@ function PlaceOrderScreen() {
                           />
                         </Col>
                         <Col>
-                          <Link className="productTitle" to={`/product/${item.product}`}>
+                          <Link
+                            className="productTitle"
+                            to={`/product/${item.product}`}
+                          >
                             {item.name}
                           </Link>
                         </Col>
@@ -78,49 +115,52 @@ function PlaceOrderScreen() {
         </Col>
 
         <Col md={4}>
-            <Card>
-                <ListGroup variant='flush'>
-                    <ListGroup.Item>
-                        <h2>Order Summary</h2>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                        <Row>
-                            <Col>Items:</Col>
-                            <Col>${cart.itemsPrice}</Col>
-                        </Row>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                        <Row>
-                            <Col>Shipping:</Col>
-                            <Col>${cart.shippingPrice}</Col>
-                        </Row>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                        <Row>
-                            <Col>Tax:</Col>
-                            <Col>${cart.taxPrice}</Col>
-                        </Row>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                        <Row>
-                            <Col>Total:</Col>
-                            <Col>${cart.totalPrice}</Col>
-                        </Row>
-                    </ListGroup.Item>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Items:</Col>
+                  <Col>${cart.itemsPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Shipping:</Col>
+                  <Col>${cart.shippingPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Tax:</Col>
+                  <Col>${cart.taxPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total:</Col>
+                  <Col>${cart.totalPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                    <ListGroup.Item>
-                        <Button
-                            type='button'
-                            className='col-12'
-                            disabled={cart.cartItems === 0}
-                            onClick={placeOrder}
-                        >
-                            Place Order    
-                        </Button>
-                    </ListGroup.Item>
+              <ListGroup.Item>
+                {error && <Message variant='danger'>{error}</Message>}
+              </ListGroup.Item>
 
-                </ListGroup>
-            </Card>
+              <ListGroup.Item>
+                <Button
+                  type="button"
+                  className="col-12"
+                  disabled={cart.cartItems === 0}
+                  onClick={placeOrder}
+                >
+                  Place Order
+                </Button>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
         </Col>
       </Row>
     </div>
