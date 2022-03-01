@@ -2,4 +2,6 @@ log out does not work on pages where authentification is required, my initial th
 
 proceed to checkout properly redirects the page if the user is not logged in so that could be something to look at to compair.
 
+style the new customer? register section
+
 https://dev.to/salehmubashar/usenavigate-tutorial-react-js-aop
