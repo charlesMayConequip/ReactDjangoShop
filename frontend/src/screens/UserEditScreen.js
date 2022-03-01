@@ -6,7 +6,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
-import { getUserDetails } from "../actions/userActions";
+import { getUserDetails, updateUser } from "../actions/userActions";
+import { USER_UPDATE_RESET } from '../constants/userConstants'
 
 function UserEditScreen({ match, history }) {
   const { id: userId } = useParams();
@@ -20,21 +21,31 @@ function UserEditScreen({ match, history }) {
   const userDetails = useSelector((state) => state.userDetails);
   const { error, loading, user } = userDetails;
 
+  const userUpdate = useSelector((state) => state.userUpdate);
+  const { error:errorUpdate, loading:loadingUpdate, success:successUpdate } = userUpdate;
+
   const navigate = useNavigate();
 
   //This seems to not be firing until the page is refreshed, both pulling up the page and clicking the button do not fire useEffect
   useEffect(() => {
-    if(!user.name || user._id !== Number(userId)){
-        dispatch(getUserDetails(userId))
+
+    if(successUpdate){
+        dispatch({type:USER_UPDATE_RESET})
+        navigate('/admin/userlist')
     }else{
-        setName(user.name)
-        setEmail(user.email)
-        setIsAdmin(user.isAdmin)
+        if(!user.name || user._id !== Number(userId)){
+            dispatch(getUserDetails(userId))
+        }else{
+            setName(user.name)
+            setEmail(user.email)
+            setIsAdmin(user.isAdmin)
+        }
     }
-  }, [user, userId]);
+  }, [user, userId, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(updateUser({_id:user._id, name, email, isAdmin}))
   };
 
   return (
@@ -42,6 +53,9 @@ function UserEditScreen({ match, history }) {
       <Link to="/admin/userlist">Go Back</Link>
       <FormContainer>
         <h1>Edit User</h1>
+        {loadingUpdate && <Loader />}
+        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+
         {loading ? (
           <Loader />
         ) : error ? (
