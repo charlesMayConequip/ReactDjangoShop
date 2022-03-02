@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,8 +8,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
 import { listProductDetails, updateProduct } from "../actions/productActions";
-import { PRODUCT_UPDATE_RESET } from '../constants/productConstants'
-
+import { PRODUCT_UPDATE_RESET } from "../constants/productConstants";
 
 function ProductEditScreen({ match, history }) {
   const { id: productId } = useParams();
@@ -20,6 +20,7 @@ function ProductEditScreen({ match, history }) {
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -29,40 +30,70 @@ function ProductEditScreen({ match, history }) {
   const { error, loading, product } = productDetails;
 
   const productUpdate = useSelector((state) => state.productUpdate);
-  const { error:errorUpdate, loading:loadingUpdate, success:successUpdate } = productUpdate;
+  const {
+    error: errorUpdate,
+    loading: loadingUpdate,
+    success: successUpdate,
+  } = productUpdate;
 
   useEffect(() => {
-
-    if(successUpdate){
-        dispatch({type:PRODUCT_UPDATE_RESET})
-        navigate('/admin/productlist')
+    if (successUpdate) {
+      dispatch({ type: PRODUCT_UPDATE_RESET });
+      navigate("/admin/productlist");
     } else {
-        if (!product.name || product._id !== Number(productId)) {
-            dispatch(listProductDetails(productId));
-          } else {
-            setName(product.name);
-            setPrice(product.price);
-            setImage(product.image);
-            setBrand(product.name);
-            setCategory(product.category);
-            setCountInStock(product.countInStock);
-            setDescription(product.description);
-          }
+      if (!product.name || product._id !== Number(productId)) {
+        dispatch(listProductDetails(productId));
+      } else {
+        setName(product.name);
+        setPrice(product.price);
+        setImage(product.image);
+        setBrand(product.name);
+        setCategory(product.category);
+        setCountInStock(product.countInStock);
+        setDescription(product.description);
+      }
     }
   }, [product, productId, dispatch, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(updateProduct({
-        _id:productId,
+    dispatch(
+      updateProduct({
+        _id: productId,
         name,
         price,
         image,
         brand,
         category,
         countInStock,
-        description
-    }))
+        description,
+      })
+    );
+  };
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0]
+    const formData = new FormData()
+
+    formData.append('image', file)
+    formData.append('product_id', productId)
+
+    setUploading(true)
+
+    try{
+      const config = {
+        headers:{
+          'Content-Type':'multipart/form-data'
+        }
+      }
+
+      const {data} = await axios.post('/api/products/upload/', formData, config)
+      setImage(data)
+      setUploading(false)
+
+    }catch(error){
+      setUploading(false)
+    }
   };
 
   return (
@@ -71,14 +102,14 @@ function ProductEditScreen({ match, history }) {
       <FormContainer>
         <h1>Edit Product</h1>
         {loadingUpdate && <Loader />}
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (
           <Message variant="danger">{error}</Message>
         ) : (
           <Form onSubmit={submitHandler}>
-            <Form.Group controlId="name">
+            <Form.Group>
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="name"
@@ -88,7 +119,7 @@ function ProductEditScreen({ match, history }) {
               ></Form.Control>
             </Form.Group>
 
-            <Form.Group controlId="price">
+            <Form.Group>
               <Form.Label>Price</Form.Label>
               <Form.Control
                 type="number"
@@ -98,17 +129,25 @@ function ProductEditScreen({ match, history }) {
               ></Form.Control>
             </Form.Group>
 
-            <Form.Group controlId="image">
+            <Form.Group>
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter Image"
+                placeholder="Enter image"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
               ></Form.Control>
+
+              <Form.Control
+                id="image-file"
+                label="Choose File"
+                type="file"
+                onChange={uploadFileHandler}
+              ></Form.Control>
+              {uploading && <Loader />}
             </Form.Group>
 
-            <Form.Group controlId="brand">
+            <Form.Group>
               <Form.Label>Brand</Form.Label>
               <Form.Control
                 type="text"
@@ -118,7 +157,7 @@ function ProductEditScreen({ match, history }) {
               ></Form.Control>
             </Form.Group>
 
-            <Form.Group controlId="countinstock">
+            <Form.Group>
               <Form.Label>Stock</Form.Label>
               <Form.Control
                 type="number"
@@ -128,7 +167,7 @@ function ProductEditScreen({ match, history }) {
               ></Form.Control>
             </Form.Group>
 
-            <Form.Group controlId="category">
+            <Form.Group>
               <Form.Label>Category</Form.Label>
               <Form.Control
                 type="text"
@@ -138,7 +177,7 @@ function ProductEditScreen({ match, history }) {
               ></Form.Control>
             </Form.Group>
 
-            <Form.Group controlId="description">
+            <Form.Group>
               <Form.Label>Description</Form.Label>
               <Form.Control
                 type="text"
