@@ -112,7 +112,7 @@ function ProductListScreen({ match }) {
             ))}
           </tbody>
         </Table>
-        <Paginate page={page} pages={pages}/>
+        <Paginate page={page} pages={pages} isAdmin={true} />
         </div>
       )}
     </div>
