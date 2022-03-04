@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import Paginate from "../components/Paginate";
 import { listProducts, deleteProduct, createProduct } from "../actions/productActions";
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
@@ -13,7 +14,7 @@ function ProductListScreen({ match }) {
   const navigate = useNavigate();
 
   const productList = useSelector((state) => state.productList);
-  const { loading, error, products } = productList;
+  const { loading, error, products, pages, page } = productList;
 
   const productDelete = useSelector((state) => state.productDelete);
   const { loading:loadingDelete, error:errorDelete, success:successDelete } = productDelete;
@@ -70,6 +71,7 @@ function ProductListScreen({ match }) {
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
+        <div>
         <Table striped bordered hover responsive className="table-sm">
           <thead>
             <tr>
@@ -110,6 +112,8 @@ function ProductListScreen({ match }) {
             ))}
           </tbody>
         </Table>
+        <Paginate page={page} pages={pages}/>
+        </div>
       )}
     </div>
   );
