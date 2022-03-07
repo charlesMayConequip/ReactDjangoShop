@@ -5,3 +5,6 @@ proceed to checkout properly redirects the page if the user is not logged in so 
 style the new customer? register section
 
 https://dev.to/salehmubashar/usenavigate-tutorial-react-js-aop
+
+Pagination on list product page is being buggy, works half of the time and then gets stuck and you need to refresh
+    Use effect is getting called multiple times, look into doing an or statement or something along those lines

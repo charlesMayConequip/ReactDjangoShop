@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
@@ -12,6 +12,9 @@ import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 function ProductListScreen({ match }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  let keyword = searchParams.get("keyword");
+  let mypage = searchParams.get("page");
 
   const productList = useSelector((state) => state.productList);
   const { loading, error, products, pages, page } = productList;
@@ -24,6 +27,7 @@ function ProductListScreen({ match }) {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+  
 
   useEffect(() => {
     dispatch({type:PRODUCT_CREATE_RESET})
@@ -38,7 +42,9 @@ function ProductListScreen({ match }) {
       dispatch(listProducts())
     }
 
-  }, [dispatch, userInfo, successDelete, successCreate, createdProduct]);
+    console.log(keyword)
+    dispatch(listProducts(keyword, mypage));
+  }, [dispatch, userInfo, successDelete, successCreate, createdProduct, mypage]);
 
   const deleteHandler = (id) => {
     if(window.confirm('Are you sure you want to delete this product?')){
