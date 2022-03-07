@@ -15,7 +15,8 @@ function HomeScreen() {
   const { error, loading, products, page, pages } = productList;
 
   const [searchParams, setSearchParams] = useSearchParams();
-  let keyword = searchParams.get("keyword");
+  let keyword = "null";
+  keyword = searchParams.get("keyword");
   let mypage = searchParams.get("page");
 
   useEffect(() => {
@@ -26,6 +27,7 @@ function HomeScreen() {
   return (
     <div>
       {!keyword && <ProductCarousel />}
+      {keyword == "null" && <ProductCarousel />}
       <h1>Latest Products</h1>
       {loading ? (
         <Loader />

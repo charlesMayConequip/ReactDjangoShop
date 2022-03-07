@@ -39,12 +39,10 @@ function ProductListScreen({ match }) {
     if (successCreate) {
       navigate(`/admin/product/${createdProduct._id}/edit`)
     } else {
-      dispatch(listProducts())
+      dispatch(listProducts(keyword, mypage));
     }
-
-    console.log(keyword)
-    dispatch(listProducts(keyword, mypage));
-  }, [dispatch, userInfo, successDelete, successCreate, createdProduct, mypage]);
+    
+  }, [dispatch, mypage, userInfo, successDelete, successCreate, createdProduct]);
 
   const deleteHandler = (id) => {
     if(window.confirm('Are you sure you want to delete this product?')){
