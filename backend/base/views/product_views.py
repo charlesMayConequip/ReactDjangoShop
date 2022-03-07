@@ -34,7 +34,7 @@ def getProducts(request):
     except EmptyPage:
         products = paginator.page(paginator.num_pages)
 
-    if page == None:
+    if page == None or page == "null":
         page = 1
 
     page = int(page)
