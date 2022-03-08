@@ -1,0 +1,6 @@
+in the if os.getcwd in settings.py add ->
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+
+Configure an ssl on the website
+Make sure non www redirects to www
