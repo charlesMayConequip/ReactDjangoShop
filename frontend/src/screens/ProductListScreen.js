@@ -32,8 +32,10 @@ function ProductListScreen({ match }) {
   useEffect(() => {
     dispatch({type:PRODUCT_CREATE_RESET})
 
-    if (!userInfo.isAdmin) {
-      navigate('/login')
+    if (!userInfo) {
+      navigate('/')
+    } else if (!userInfo.isAdmin){
+        navigate('/login')
     }
 
     if (successCreate) {

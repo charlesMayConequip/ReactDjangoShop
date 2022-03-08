@@ -67,10 +67,10 @@ function LoginScreen({history}) {
 
       </Form>
 
-      <Row className="py-3">
+      <Row className="py-3"><span>
         New Customer? <Link
-        to={redirect ? `/register?redirect=${redirect}` : '/register'}>
-            Register</Link>
+        to={redirect ? `/register?redirect=${redirect}` : '/register'} className="productTitle">
+            Register</Link></span>
       </Row>
   </FormContainer>
   )}

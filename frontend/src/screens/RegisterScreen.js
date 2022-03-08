@@ -97,10 +97,10 @@ function RegisterScreen({ history }) {
         </Button>
       </Form>
 
-      <Row className="py-3">
+      <Row className="py-3"><span>
         Have an Account? <Link
-        to={redirect ? `/login?redirect=${redirect}` : '/login'}>
-            Sign In</Link>
+        to={redirect ? `/login?redirect=${redirect}` : '/login'} className='productTitle'>
+            Sign In</Link></span>
       </Row>
 
     </FormContainer>
