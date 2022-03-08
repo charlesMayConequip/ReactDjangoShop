@@ -26,16 +26,22 @@ function PlaceOrderScreen({ history }) {
     Number(cart.taxPrice)
   ).toFixed(2);
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   if(!cart.paymentMethod){
     navigate('/payment')
   }
 
   useEffect(() => {
+    if (!userInfo) {
+      navigate('/login')
+    }
     if(success){
       navigate(`/order/${order._id}`)
       dispatch({type: ORDER_CREATE_RESET})
     }
-  }, [success, history])
+  }, [success, history, dispatch, userInfo])
 
   const placeOrder = () => {
     dispatch(

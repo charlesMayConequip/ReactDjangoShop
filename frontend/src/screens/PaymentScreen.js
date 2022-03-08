@@ -20,6 +20,17 @@ function PaymentScreen({ history }) {
     navigate("/shipping");
   }
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  useEffect(() => {
+
+    if (!userInfo) {
+      navigate('/login')
+    }
+
+  }, [dispatch, userInfo]);
+
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(savePaymentMethod(paymentMethod))

@@ -36,7 +36,7 @@ function ProfileScreen({ history }) {
   //This seems to not be firing until the page is refreshed, both pulling up the page and clicking the button do not fire useEffect
   useEffect(() => {
     if (!userInfo) {
-      history.push("/login");
+      navigate("/login");
     } else {
       if (!user || !user.name || userInfo._id !== user._id || success || userInfo._id !== user._id) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET });

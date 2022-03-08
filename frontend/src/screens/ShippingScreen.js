@@ -20,6 +20,17 @@ function ShippingScreen({ history }) {
   const [state, setState] = useState(shippingAddress.state);
   const [country, setCountry] = useState(shippingAddress.country);
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  useEffect(() => {
+
+    if (!userInfo) {
+      navigate('/login')
+    }
+
+  }, [dispatch, userInfo]);
+
   const submitHandler = (e) => {
     e.preventDefault()
     dispatch(saveShippingAddress({address, city, postalCode, state, country}))
